@@ -1,0 +1,15 @@
+{
+  "backend": "http://localhost:10001",
+  "oauth": {
+    "github": {
+      "clientId": "d2fbdfc461257bd1a8de",
+      "clientSecret": "7ed62279e9e0a94c0b73718bf5b5ab850e5716cb"
+    },
+    "facebook": {
+      
+    },
+    "google": {
+
+    }
+  }
+}
