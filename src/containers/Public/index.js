@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import FileFileUpload from 'material-ui/svg-icons/file/file-upload';
 import LinearProgress from 'material-ui/LinearProgress';
 import axios from 'axios';
 
@@ -44,16 +42,32 @@ class Public extends Component {
     e.preventDefault();
     let files = [];
     const { multiple } = this.state;
+
     if (e.dataTransfer) {
       files = (multiple) ? this.toJsArray(e.dataTransfer.files) : [e.dataTransfer.files[0]];
     } else {
       files = this.toJsArray(e.target.files);
     }
 
-    this.setState({
-      validFiles: files.filter(file => this.types.includes(file.type)),
-      invalidFiles: files.filter(file => !this.types.includes(file.type))
+    const validFiles = [];
+    const invalidFiles = [];
+
+    files.map((file) => {
+      if (this.types.includes(file.type)) {
+        validFiles.push(file);
+      } else {
+        invalidFiles.push(file);
+      }
     });
+
+    this.setState({
+      validFiles,
+      invalidFiles
+    });
+
+    if (validFiles.length > 0) {
+      this.uploadFiles();
+    }
   }
 
   updateProgress(e) {
@@ -94,19 +108,18 @@ class Public extends Component {
 
     return (
       <div>
-        <div className={styles.uploadZone}>
-          <UploadZone 
-            multiple={multiple}
-            onDrop={this.onDrop} 
-            onDragOver={this.onDragOver}
-          />
-        </div>
+
         <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
-        <FlatButton icon={<FileFileUpload />} onClick={this.uploadFiles} />
-        
-        {isUploading && 
+        {isUploading ? 
           <div className={styles.uploadProgress}>
             <LinearProgress mode="determinate" value={percentCompleted} />
+          </div> :
+          <div className={styles.uploadZone}>
+            <UploadZone 
+              multiple={multiple}
+              onDrop={this.onDrop} 
+              onDragOver={this.onDragOver}
+            />
           </div>
         }
       </div>
