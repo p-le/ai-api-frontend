@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
 import { List, ListItem } from 'material-ui/List';
 import * as cookies from 'browser-cookies';
 
@@ -23,7 +22,6 @@ import { authenticate } from '../../actions/AuthActions/actions';
 class App extends Component {
 
   componentDidMount() {
-    console.log('Phu Le');
     const auth = cookies.get('auth');
     const { authenticate } = this.props;
     console.log(Config);
@@ -37,10 +35,6 @@ class App extends Component {
     return (
       <MuiThemeProvider>
         <div>
-          <AppBar 
-            title="React Budget Boilerplate" 
-            iconClassNameRight="muidocs-icon-navigation-expand-more" 
-          /> 
           <List>
             <ListItem primaryText="Public" containerElement={<Link to="/public" />} />
             <ListItem primaryText="Private" containerElement={<Link to="/private" />} />

@@ -1,30 +1,39 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import styles from './style.css';
 
-const UploadZone = () => {
-  let fileInput = null;
+class UploadZone extends Component {
+  constructor(props) {
+    super(props);
+    this.fileInput = null;
+    this.onClick = this.onClick.bind(this);
+  }
 
-  const sayHi = (event) => {
-    fileInput.click();
+  onClick(event) {
+    this.fileInput.click();
     console.log(event);
-  };
+  }
 
-  return (
-    <div className={styles.upload} onClick={sayHi}>
-      ファイルアップロードをドラッグ&ドロップ
-      <input 
-        type="file"
-        className={styles.hidden}
-        ref={(input) => { fileInput = input; }}
-        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-      />
-    </div>
-  );
-};
-
-// UploadZone.propTypes = {
-//   name: PropTypes.string.isRequired
-// };
+  render() {
+    const { multiple, onDrop, onDragOver} = this.props;
+    
+    return (
+      <div 
+        className={styles.upload} 
+        onClick={this.onClick}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
+      >
+        ファイルアップロードをドラッグ&ドロップ
+        <input 
+          type="file"
+          className={styles.hidden}
+          ref={(input) => { this.fileInput = input; }}
+          onChange={onDrop}
+          multiple={multiple}
+        />
+      </div>
+    );
+  }
+}
 
 export default UploadZone;

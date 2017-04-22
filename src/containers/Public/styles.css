@@ -1,0 +1,10 @@
+
+.test {
+  font-size: 25px;
+}
+
+.upload_zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
