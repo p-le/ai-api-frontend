@@ -23,7 +23,7 @@ class UploadZone extends Component {
         onDragOver={onDragOver}
         onDrop={onDrop}
       >
-        ファイルアップロードをドラッグ&ドロップ
+        ファイルをドラッグ
         <input 
           type="file"
           className={styles.hidden}

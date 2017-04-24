@@ -14,17 +14,17 @@ class Public extends Component {
       max: Infinity
     };
     this.types = [
-      'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      // 'application/vnd.ms-excel',
+      // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
+    this.validFiles = [];
+    this.invalidFiles = [];
     this.state = {
       multiple: true,
       isUploading: false,
       isUploadCompleted: false,
       percentCompleted: 0,
-      completed: 0,
-      validFiles: [],
-      invalidFiles: []
+      completed: 0
     };
 
     this.onDrop = this.onDrop.bind(this);
@@ -49,43 +49,34 @@ class Public extends Component {
       files = this.toJsArray(e.target.files);
     }
 
-    const validFiles = [];
-    const invalidFiles = [];
-
     files.map((file) => {
-      if (this.types.includes(file.type)) {
-        validFiles.push(file);
+      if (this.types.length === 0 || this.types.includes(file.type)) {
+        this.validFiles.push(file);
       } else {
-        invalidFiles.push(file);
+        this.invalidFiles.push(file);
       }
     });
 
-    this.setState({
-      validFiles,
-      invalidFiles
-    });
-
-    if (validFiles.length > 0) {
+    if (this.validFiles.length > 0) {
       this.uploadFiles();
     }
   }
 
   updateProgress(e) {
-    console.log(e.loaded, e.total);
-    console.log(Math.round((e.loaded * 100) / e.total));
     this.setState({
       percentCompleted: Math.round((e.loaded * 100) / e.total)
     });
   }
 
   uploadFiles() {
-    const { validFiles } = this.state;
     const data = new FormData();
     const config = {
       onUploadProgress: this.updateProgress
     };
 
-    validFiles.map(file => data.append('file[]', file));
+    this.validFiles.map(file => data.append('file[]', file));
+    console.log(this.validFiles);
+    console.log(data);
     this.setState({
       isUploading: true
     });
@@ -95,6 +86,8 @@ class Public extends Component {
         this.setState({
           isUploading: false
         });
+        this.validFiles = [];
+        this.invalidFiles = [];
       })
       .catch(err => console.log(err));
   }
@@ -104,12 +97,12 @@ class Public extends Component {
   }
 
   render() {
-    const { multiple, validFiles, invalidFiles, isUploading, percentCompleted } = this.state;
+    const { multiple, isUploading, percentCompleted } = this.state;
 
     return (
       <div>
 
-        <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
+        <UploadFiles validFiles={this.validFiles} invalidFiles={this.invalidFiles} />
         {isUploading ? 
           <div className={styles.uploadProgress}>
             <LinearProgress mode="determinate" value={percentCompleted} />
