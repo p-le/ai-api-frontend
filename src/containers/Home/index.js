@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import LinearProgress from 'material-ui/LinearProgress';
 import axios from 'axios';
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
+import Config from 'Config';
 
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
 import UploadFiles from '../../components/UploadFiles';
 
-class Public extends Component {
+
+
+class Home extends Component {
   constructor() {
     super();
     this.size = {
@@ -80,7 +86,7 @@ class Public extends Component {
     this.setState({
       isUploading: true
     });
-    axios.post('http://localhost:2712/upload', data, config)
+    axios.post(`${Config.backend}/upload`, data, config)
       .then((res) => {
         console.log(res.status);
         this.setState({
@@ -120,4 +126,4 @@ class Public extends Component {
   }
 }
 
-export default Public;
+export default Home;

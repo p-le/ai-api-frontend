@@ -1,5 +1,5 @@
 {
-  "backend": "http://localhost:10001",
+  "backend": "http://localhost:2712",
   "oauth": {
     "github": {
       "clientId": "d2fbdfc461257bd1a8de",

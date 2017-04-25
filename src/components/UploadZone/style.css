@@ -3,11 +3,12 @@
   color: #29B6F6;
   border-radius: 7px;
   padding: 75px;
-  margin: 10px;
+  margin: 50px;
   width: 300px;
   font-size: 30px;
   font-weight: bold;
   cursor: pointer;
+  text-align: center;
 }
 .hidden {
   display: none;
