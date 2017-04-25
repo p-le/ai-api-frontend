@@ -32,7 +32,7 @@ class App extends Component {
         <div>
           <Nav />
           <Switch>
-            <Route path="/" component={Home} />
+            <Route exact path="/" component={Home} />
             <Route path="/history" component={History} />
             <Route component={NoMatch} />
           </Switch>
