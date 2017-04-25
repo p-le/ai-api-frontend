@@ -6,9 +6,10 @@
   "author": "p-le",
   "license": "MIT",
   "scripts": {
-    "build": "webpack -p --config config/webpack.dev.js",
+    "build": "webpack -p --config config/webpack.prod.js",
     "dev": "webpack-dev-server --config config/webpack.dev.js",
-    "test": ".\\node_modules\\.bin\\jest"
+    "test": ".\\node_modules\\.bin\\jest",
+    "release-s3": "aws s3 sync dist/ s3://p2.api.com"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.7",
