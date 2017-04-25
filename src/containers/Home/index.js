@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
 import axios from 'axios';
 /* eslint-disable import/no-extraneous-dependencies */
@@ -9,7 +10,7 @@ import Config from 'Config';
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
 import UploadFiles from '../../components/UploadFiles';
-
+import { checkValidFiles, checkInvalidFiles } from '../../actions/ApiActions';
 
 
 class Home extends Component {
@@ -45,6 +46,7 @@ class Home extends Component {
   }
 
   onDrop(e) {
+    const { onCheckValidFiles, onCheckInvalidFiles } = this.props;
     e.preventDefault();
     let files = [];
     const { multiple } = this.state;
@@ -63,6 +65,9 @@ class Home extends Component {
       }
     });
 
+    onCheckValidFiles(this.validFiles);
+    onCheckInvalidFiles(this.invalidFiles);
+    
     if (this.validFiles.length > 0) {
       this.uploadFiles();
     }
@@ -126,4 +131,14 @@ class Home extends Component {
   }
 }
 
-export default Home;
+const mapStateToProps = state =>  ({
+  validFiles: state.api.validFiles,
+  invalidFiles: state.api.invalidFiles
+});
+
+const mapDispatchToProps = dispatch => ({
+  onCheckValidFiles: files => dispatch(checkValidFiles(files)),
+  onCheckInvalidFiles: files => dispatch(checkInvalidFiles(files)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
