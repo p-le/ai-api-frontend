@@ -9,7 +9,7 @@ import Config from 'Config';
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
 import UploadFiles from '../../components/UploadFiles';
-import { uploadFiles, openWs } from '../../actions/Api';
+import { uploadFiles, checkValidFiles, checkInvalidFiles, processDone } from '../../actions/Api';
 
 
 class Home extends Component {
@@ -19,18 +19,8 @@ class Home extends Component {
       min: 0,
       max: Infinity
     };
-    this.types = [
-      // 'application/vnd.ms-excel',
-      // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    ];
-    this.validFiles = [];
-    this.invalidFiles = [];
     this.state = {
       multiple: true,
-      isUploading: false,
-      isUploadCompleted: false,
-      percentCompleted: 0,
-      completed: 0
     };
 
     this.onDrop = this.onDrop.bind(this);
@@ -38,39 +28,50 @@ class Home extends Component {
     this.updateProgress = this.updateProgress.bind(this);
   }
   componentDidMount() {
+    const { onProcessDone } = this.props;
     const socket = io(`${Config.backend.replace('http', 'ws')}`, {
       path: '/process'
     });
-    socket.on('result', (msg) => {
-      console.log(JSON.parse(msg));
+    socket.on('result', (data) => {
+      console.log(data);
+      onProcessDone(JSON.parse(data));
     });
   }
   onDragOver(e) {
     e.preventDefault();
   }
 
-  async onDrop(e) {
-    const { doUploadFiles } = this.props;
+  onDrop(e) {
+    const { doUploadFiles, doCheckInvalidFiles, doCheckValidFiles, allowedTypes } = this.props;
     e.preventDefault();
+
     let files = [];
+    const validFiles = [];
+    const invalidFiles = [];
+
     const { multiple } = this.state;
 
     if (e.dataTransfer) {
-      files = (multiple) ? await this.toJsArray(e.dataTransfer.files) : [e.dataTransfer.files[0]];
+      files = (multiple) ? this.toJsArray(e.dataTransfer.files) : [e.dataTransfer.files[0]];
     } else {
-      files = await this.toJsArray(e.target.files);
+      files = this.toJsArray(e.target.files);
     }
 
-    await files.map((file) => {
-      if (this.types.length === 0 || this.types.includes(file.type)) {
-        this.validFiles.push(file);
+    files.map((file) => {
+      if (allowedTypes.length === 0 || allowedTypes.includes(file.type)) {
+        validFiles.push(file);
       } else {
-        this.invalidFiles.push(file);
+       invalidFiles.push(file);
       }
     });
     
-    if (this.validFiles.length > 0) {
-      doUploadFiles(this.validFiles);
+    if (validFiles.length > 0) {
+      console.log(validFiles);
+      doCheckValidFiles(validFiles);
+      doUploadFiles(validFiles);
+    }
+    if (invalidFiles.length > 0) {
+      doCheckInvalidFiles(invalidFiles);
     }
   }
 
@@ -85,12 +86,12 @@ class Home extends Component {
   }
 
   render() {
-    const { multiple, isUploading, percentCompleted } = this.state;
+    const { multiple } = this.state;
+    const { isUploading, percentCompleted, validFiles, invalidFiles } = this.props;
 
     return (
       <div>
-
-        <UploadFiles validFiles={this.validFiles} invalidFiles={this.invalidFiles} />
+        <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
         {isUploading ? 
           <div className={styles.uploadProgress}>
             <LinearProgress mode="determinate" value={percentCompleted} />
@@ -109,14 +110,19 @@ class Home extends Component {
 }
 
 const mapStateToProps = state =>  ({
+  allowedTypes: state.api.allowedTypes,
   validFiles: state.api.validFiles,
   invalidFiles: state.api.invalidFiles,
+  isUploading: state.api.isUploading,
+  percentCompleted: state.api.percentCompleted,
   ws: state.api.ws
 });
 
 const mapDispatchToProps = dispatch => ({
   doUploadFiles: files => dispatch(uploadFiles(files)),
-  doOpenWs: ws => dispatch(openWs(ws))
+  doCheckValidFiles: files => dispatch(checkValidFiles(files)),
+  doCheckInvalidFiles: files => dispatch(checkInvalidFiles(files)),
+  onProcessDone: file => dispatch(processDone(file))
 });
 
 

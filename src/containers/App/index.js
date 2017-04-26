@@ -12,7 +12,7 @@ import NoMatch from '../NoMatch';
 class App extends Component {
 
   componentDidMount() {
-    console.log('aaaa');
+    console.log('');
   } 
 
   render() {

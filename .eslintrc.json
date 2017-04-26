@@ -33,6 +33,7 @@
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",
+    "no-case-declarations": 0,
     "rest-spread-spacing": "error",
     "semi": "error",
     "no-console": "off",

@@ -23,17 +23,15 @@ export const uploadFiles = (files) => {
   const data = new FormData();
   files.map(file => data.append('file[]', file));
   return (dispatch) => {
-
     const config = {
       onUploadProgress: e => dispatch(updateProgress(e))
     };
-
     dispatch(uploading());
     axios.post(`${Config.backend}/upload`, data, config).then((res) => {
-      dispatch(uploadDone());
-      console.log(res.data);
-    }).
-    catch(err => dispatch(uploadFailed(err)));
+      const uploadedFiles = res.data;
+      dispatch(uploadDone(uploadedFiles));
+    })
+    .catch(err => dispatch(uploadFailed(err)));
   };
 };
 
@@ -51,6 +49,12 @@ const uploadFailed = error => ({
   error
 });
 
-const uploadDone = () => ({
-  type: Types.UPLOAD_DONE
+const uploadDone = files => ({
+  type: Types.UPLOAD_DONE,
+  files
+});
+
+export const processDone = file => ({
+  type: Types.PROCESS_DONE,
+  file
 });

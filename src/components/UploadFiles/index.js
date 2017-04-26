@@ -1,8 +1,20 @@
 import React from 'react';
 import { List, ListItem } from 'material-ui/List';
-import FileFileUpload from 'material-ui/svg-icons/file/file-upload';
 import AlertErrorOutline from 'material-ui/svg-icons/alert/error-outline';
+import Avatar from 'material-ui/Avatar';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+/*eslint-disable */
+import Config from 'Config';
+/*eslint-enable */
 
+import { blue500 } from 'material-ui/styles/colors';
+import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from 'material-ui/CircularProgress';
+
+const style = {
+  top: '18px',
+  color: '#29B6F6'
+};
 const UploadFiles = ({ validFiles, invalidFiles }) => (
   <div>
     <List> 
@@ -10,9 +22,13 @@ const UploadFiles = ({ validFiles, invalidFiles }) => (
         validFiles.map((file, index) => (
           <ListItem 
             key={index}
+            leftAvatar={<Avatar icon={<ActionAssignment />} backgroundColor={blue500} />}
             primaryText={file.name}
-            secondaryText={file.size}
-            leftIcon={<FileFileUpload />} 
+            secondaryText={`${parseFloat(file.size/1024).toFixed(2)} kB`}
+            rightIconButton={file.isProcessed ? 
+              <RaisedButton label="Download" primary={true} style={style} href={`${Config.backend}/result/${file._id}`} /> : 
+              <CircularProgress style={style} />
+            }
           />
         ))
       }
