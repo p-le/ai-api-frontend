@@ -5,6 +5,7 @@ import styles from './styles.css';
 
 const navItemStyle = {
   height: '60px',
+  color: '#29B6F6',
   minWidth: '120px',
   display: 'flex',
   alignItems: 'center',

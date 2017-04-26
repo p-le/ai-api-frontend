@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
-import axios from 'axios';
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
+import io from 'socket.io-client';
+/*eslint-disable */
 import Config from 'Config';
+/*eslint-enable */
 
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
 import UploadFiles from '../../components/UploadFiles';
-import { checkValidFiles, checkInvalidFiles } from '../../actions/ApiActions';
+import { uploadFiles, openWs } from '../../actions/Api';
 
 
 class Home extends Component {
@@ -36,40 +35,40 @@ class Home extends Component {
 
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
-    this.uploadFiles = this.uploadFiles.bind(this);
     this.updateProgress = this.updateProgress.bind(this);
-
   }
-
+  componentDidMount() {
+    const socket = io(`${Config.backend.replace('http', 'ws')}`, {
+      path: '/process'
+    });
+    console.log(socket);
+  }
   onDragOver(e) {
     e.preventDefault();
   }
 
-  onDrop(e) {
-    const { onCheckValidFiles, onCheckInvalidFiles } = this.props;
+  async onDrop(e) {
+    const { doUploadFiles } = this.props;
     e.preventDefault();
     let files = [];
     const { multiple } = this.state;
 
     if (e.dataTransfer) {
-      files = (multiple) ? this.toJsArray(e.dataTransfer.files) : [e.dataTransfer.files[0]];
+      files = (multiple) ? await this.toJsArray(e.dataTransfer.files) : [e.dataTransfer.files[0]];
     } else {
-      files = this.toJsArray(e.target.files);
+      files = await this.toJsArray(e.target.files);
     }
 
-    files.map((file) => {
+    await files.map((file) => {
       if (this.types.length === 0 || this.types.includes(file.type)) {
         this.validFiles.push(file);
       } else {
         this.invalidFiles.push(file);
       }
     });
-
-    onCheckValidFiles(this.validFiles);
-    onCheckInvalidFiles(this.invalidFiles);
     
     if (this.validFiles.length > 0) {
-      this.uploadFiles();
+      doUploadFiles(this.validFiles);
     }
   }
 
@@ -77,30 +76,6 @@ class Home extends Component {
     this.setState({
       percentCompleted: Math.round((e.loaded * 100) / e.total)
     });
-  }
-
-  uploadFiles() {
-    const data = new FormData();
-    const config = {
-      onUploadProgress: this.updateProgress
-    };
-
-    this.validFiles.map(file => data.append('file[]', file));
-    console.log(this.validFiles);
-    console.log(data);
-    this.setState({
-      isUploading: true
-    });
-    axios.post(`${Config.backend}/upload`, data, config)
-      .then((res) => {
-        console.log(res.status);
-        this.setState({
-          isUploading: false
-        });
-        this.validFiles = [];
-        this.invalidFiles = [];
-      })
-      .catch(err => console.log(err));
   }
 
   toJsArray(array) {
@@ -133,12 +108,14 @@ class Home extends Component {
 
 const mapStateToProps = state =>  ({
   validFiles: state.api.validFiles,
-  invalidFiles: state.api.invalidFiles
+  invalidFiles: state.api.invalidFiles,
+  ws: state.api.ws
 });
 
 const mapDispatchToProps = dispatch => ({
-  onCheckValidFiles: files => dispatch(checkValidFiles(files)),
-  onCheckInvalidFiles: files => dispatch(checkInvalidFiles(files)),
+  doUploadFiles: files => dispatch(uploadFiles(files)),
+  doOpenWs: ws => dispatch(openWs(ws))
 });
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

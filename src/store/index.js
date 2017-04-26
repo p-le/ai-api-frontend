@@ -1,17 +1,15 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware, { END } from 'redux-saga';
+import thunk from 'redux-thunk';
 import { routerMiddleware } from 'react-router-redux';
 import { logger } from 'redux-logger';
 import DevTools from '../components/DevTools';
 import rootReducer from '../reducers';
-import rootSaga from '../sagas';
 
 export default function configureStore(initialState = {}, history) {
   const middlewares = [];
-  const saga = createSagaMiddleware();
   const router = routerMiddleware(history);
   
-  middlewares.push(saga);
+  middlewares.push(thunk);
   middlewares.push(router);
   if (process.env.NODE_ENV !== 'production') {
     middlewares.push(logger);
@@ -29,10 +27,6 @@ export default function configureStore(initialState = {}, history) {
     initialState,
     compose(...enhancers)
   );
-
-  store.runSaga = saga.run;
-  store.close = () => store.dispatch(END);
-  store.runSaga(rootSaga);
   
   return store;
 }

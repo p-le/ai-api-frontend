@@ -3,12 +3,6 @@ import { Route, Switch  } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import * as cookies from 'browser-cookies';
-
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-import Config from 'Config';
 
 import Home from '../Home';
 import History from '../History';
@@ -18,12 +12,7 @@ import NoMatch from '../NoMatch';
 class App extends Component {
 
   componentDidMount() {
-    const auth = cookies.get('auth');
-    const { authenticate } = this.props;
-    console.log(Config);
-    if(auth) {
-      authenticate();
-    }
+    console.log('aaaa');
   } 
 
   render() {

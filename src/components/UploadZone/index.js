@@ -8,9 +8,9 @@ class UploadZone extends Component {
     this.onClick = this.onClick.bind(this);
   }
 
+  // eslint-disable-next-line no-unused-vars
   onClick(event) {
     this.fileInput.click();
-    console.log(event);
   }
 
   render() {

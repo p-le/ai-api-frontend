@@ -1,2 +1,0 @@
-export const CHECK_VALID_FILES = 'api/CHECK_VALID_FILES';
-export const CHECK_INVALID_FILES = 'api/CHECK_INVALID_FILES';
