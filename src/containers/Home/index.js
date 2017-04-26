@@ -41,7 +41,9 @@ class Home extends Component {
     const socket = io(`${Config.backend.replace('http', 'ws')}`, {
       path: '/process'
     });
-    console.log(socket);
+    socket.on('result', (msg) => {
+      console.log(JSON.parse(msg));
+    });
   }
   onDragOver(e) {
     e.preventDefault();
