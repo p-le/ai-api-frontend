@@ -15,3 +15,19 @@
   align-items: center;
   justify-content: center;
 }
+
+.upload_list {
+  margin: 5% 20%;
+}
+
+@media only screen and (max-width: 480px) {
+  .upload_list {
+    margin: 5% 1%;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1080px) {
+  .upload_list {
+    margin: 5% 10%;
+  }
+}

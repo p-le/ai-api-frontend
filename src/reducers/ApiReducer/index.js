@@ -19,7 +19,10 @@ const ApiReducer = (state = initialState, action) => {
     case Types.UPLOADING:
       return Object.assign({}, state, {
         isUploading: true,
-        isUploaded: false
+        isUploaded: false,
+        percentCompleted: 0,
+        validFiles: [],
+        invalidFiles: []
       });
     case Types.UPLOAD_DONE:
       return Object.assign({}, state, {
@@ -31,7 +34,7 @@ const ApiReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         validFiles: state.validFiles.map((file) => {
           if (file._id === action.file._id) {
-            file.isProcessed = true;
+            return action.file;
           }
           return file;
         })

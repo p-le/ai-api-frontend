@@ -9,10 +9,12 @@ import Config from 'Config';
 
 import { blue500 } from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
+import ContentArchive from 'material-ui/svg-icons/content/archive';
 import CircularProgress from 'material-ui/CircularProgress';
 
 const style = {
   top: '18px',
+  right: '15px',
   color: '#29B6F6'
 };
 const UploadFiles = ({ validFiles, invalidFiles }) => (
@@ -26,7 +28,12 @@ const UploadFiles = ({ validFiles, invalidFiles }) => (
             primaryText={file.name}
             secondaryText={`${parseFloat(file.size/1024).toFixed(2)} kB`}
             rightIconButton={file.isProcessed ? 
-              <RaisedButton label="Download" primary={true} style={style} href={`${Config.backend}/result/${file._id}`} /> : 
+              <RaisedButton 
+                label="Result" 
+                secondary={true} style={style} 
+                href={`${Config.backend}/result/${file._id}`}
+                icon={<ContentArchive />}
+              /> : 
               <CircularProgress style={style} />
             }
           />

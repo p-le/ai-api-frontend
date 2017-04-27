@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import LinearProgress from 'material-ui/LinearProgress';
 import io from 'socket.io-client';
+
 /*eslint-disable */
 import Config from 'Config';
 /*eslint-enable */
+
+import LinearProgress from 'material-ui/LinearProgress';
 
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
@@ -25,7 +27,6 @@ class Home extends Component {
 
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
-    this.updateProgress = this.updateProgress.bind(this);
   }
   componentDidMount() {
     const { onProcessDone } = this.props;
@@ -33,10 +34,10 @@ class Home extends Component {
       path: '/process'
     });
     socket.on('result', (data) => {
-      console.log(data);
       onProcessDone(JSON.parse(data));
     });
   }
+
   onDragOver(e) {
     e.preventDefault();
   }
@@ -75,12 +76,6 @@ class Home extends Component {
     }
   }
 
-  updateProgress(e) {
-    this.setState({
-      percentCompleted: Math.round((e.loaded * 100) / e.total)
-    });
-  }
-
   toJsArray(array) {
     return Array.prototype.slice.call(array);
   }
@@ -91,7 +86,9 @@ class Home extends Component {
 
     return (
       <div>
-        <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
+        <div className={styles.uploadList}>
+          <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
+        </div>
         {isUploading ? 
           <div className={styles.uploadProgress}>
             <LinearProgress mode="determinate" value={percentCompleted} />
