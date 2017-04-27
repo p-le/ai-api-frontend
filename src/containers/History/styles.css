@@ -1,0 +1,15 @@
+.history {
+  margin: 5% 20%;
+}
+
+@media only screen and (max-width: 480px) {
+  .history {
+    margin: 5% 1%;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 1080px) {
+  .history {
+    margin: 5% 10%;
+  }
+}
