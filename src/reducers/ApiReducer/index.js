@@ -2,7 +2,6 @@ import * as Types from '../../actions/Api/types';
 import File from '../../utils/file';
 
 const initialState = {
-  ws: null,
   allowedTypes: [
       // 'application/vnd.ms-excel',
       // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -11,7 +10,9 @@ const initialState = {
   isUploaded: false,
   percentCompleted: 0,
   validFiles: [],
-  invalidFiles: []
+  invalidFiles: [],
+  origin: '',
+  result: ''
 };
 
 const ApiReducer = (state = initialState, action) => {
@@ -28,7 +29,8 @@ const ApiReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isUploading: false,
         isUploaded: true,
-        validFiles: action.files
+        origin: action.result.origin,
+        result: action.result.result
       });
     case Types.PROCESS_DONE:
       return Object.assign({}, state, {

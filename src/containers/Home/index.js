@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
 
 /*eslint-disable */
 import Config from 'Config';
@@ -11,7 +10,8 @@ import LinearProgress from 'material-ui/LinearProgress';
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
 import UploadFiles from '../../components/UploadFiles';
-import { uploadFiles, checkValidFiles, checkInvalidFiles, processDone } from '../../actions/Api';
+// import UploadResult from '../../components/UploadResult';
+import { uploadFiles, checkValidFiles, checkInvalidFiles} from '../../actions/Api';
 
 
 class Home extends Component {
@@ -22,20 +22,11 @@ class Home extends Component {
       max: Infinity
     };
     this.state = {
-      multiple: true,
+      multiple: false,
     };
 
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
-  }
-  componentDidMount() {
-    const { onProcessDone } = this.props;
-    const socket = io(`${Config.backend.replace('http', 'ws')}`, {
-      path: '/process'
-    });
-    socket.on('result', (data) => {
-      onProcessDone(JSON.parse(data));
-    });
   }
 
   onDragOver(e) {
@@ -67,7 +58,6 @@ class Home extends Component {
     });
     
     if (validFiles.length > 0) {
-      console.log(validFiles);
       doCheckValidFiles(validFiles);
       doUploadFiles(validFiles);
     }
@@ -82,8 +72,8 @@ class Home extends Component {
 
   render() {
     const { multiple } = this.state;
-    const { isUploading, percentCompleted, validFiles, invalidFiles } = this.props;
-
+    const { isUploading, percentCompleted, validFiles, invalidFiles, origin, result } = this.props;
+    console.log(origin, result);
     return (
       <div>
         <div className={styles.uploadList}>
@@ -112,14 +102,14 @@ const mapStateToProps = state =>  ({
   invalidFiles: state.api.invalidFiles,
   isUploading: state.api.isUploading,
   percentCompleted: state.api.percentCompleted,
-  ws: state.api.ws
+  origin: state.api.origin,
+  result: state.api.result
 });
 
 const mapDispatchToProps = dispatch => ({
   doUploadFiles: files => dispatch(uploadFiles(files)),
   doCheckValidFiles: files => dispatch(checkValidFiles(files)),
-  doCheckInvalidFiles: files => dispatch(checkInvalidFiles(files)),
-  onProcessDone: file => dispatch(processDone(file))
+  doCheckInvalidFiles: files => dispatch(checkInvalidFiles(files))
 });
 
 

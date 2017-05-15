@@ -17,6 +17,7 @@ const style = {
   right: '15px',
   color: '#29B6F6'
 };
+
 const UploadFiles = ({ validFiles, invalidFiles }) => (
   <div>
     <List> 
@@ -30,8 +31,8 @@ const UploadFiles = ({ validFiles, invalidFiles }) => (
             rightIconButton={file.isProcessed ? 
               <RaisedButton 
                 label="Result" 
-                secondary={true} style={style} 
-                href={`${Config.backend}/result/${file._id}`}
+                secondary={true} style={style}
+                containerElement={<a href={`${Config.backend}/result/${file._id}`} download />}
                 icon={<ContentArchive />}
               /> : 
               <CircularProgress style={style} />

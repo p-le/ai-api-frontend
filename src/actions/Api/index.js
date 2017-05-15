@@ -27,9 +27,9 @@ export const uploadFiles = (files) => {
       onUploadProgress: e => dispatch(updateProgress(e))
     };
     dispatch(uploading());
-    axios.post(`${Config.backend}/upload`, data, config).then((res) => {
-      const uploadedFiles = res.data;
-      dispatch(uploadDone(uploadedFiles));
+    axios.post(`${Config.backend}/api/upload`, data, config).then((res) => {
+      const result = res.data;
+      dispatch(uploadDone(result));
     })
     .catch(err => dispatch(uploadFailed(err)));
   };
@@ -49,9 +49,9 @@ const uploadFailed = error => ({
   error
 });
 
-const uploadDone = files => ({
+const uploadDone = result => ({
   type: Types.UPLOAD_DONE,
-  files
+  result
 });
 
 export const processDone = file => ({
