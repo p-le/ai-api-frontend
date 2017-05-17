@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import Config from 'Config';
 /*eslint-enable */
 
-import LinearProgress from 'material-ui/LinearProgress';
-
 import styles from './styles.css';
 import UploadZone from '../../components/UploadZone';
-import UploadFiles from '../../components/UploadFiles';
-// import UploadResult from '../../components/UploadResult';
+import Uploading from '../../components/Uploading';
+import Processing from '../../components/Processing';
+import Processed from '../../components/Processed';
+
 import { uploadFiles, checkValidFiles, checkInvalidFiles} from '../../actions/Api';
 
 
@@ -72,24 +72,21 @@ class Home extends Component {
 
   render() {
     const { multiple } = this.state;
-    const { isUploading, percentCompleted, validFiles, invalidFiles, origin, result } = this.props;
-    console.log(origin, result);
+    const { isUploading, percentCompleted, origin, result } = this.props;
+    const { isProcessing, isProcessed } = this.props;
+
     return (
       <div>
-        <div className={styles.uploadList}>
-          <UploadFiles validFiles={validFiles} invalidFiles={invalidFiles} />
+        { isProcessing && <Processing /> }
+        { isProcessed && <Processed origin={origin} result={result} /> }
+        { isUploading ? <Uploading percentage={percentCompleted} /> :
+        <div className={styles.uploadZone}>
+          <UploadZone 
+            multiple={multiple}
+            onDrop={this.onDrop} 
+            onDragOver={this.onDragOver}
+          />
         </div>
-        {isUploading ? 
-          <div className={styles.uploadProgress}>
-            <LinearProgress mode="determinate" value={percentCompleted} />
-          </div> :
-          <div className={styles.uploadZone}>
-            <UploadZone 
-              multiple={multiple}
-              onDrop={this.onDrop} 
-              onDragOver={this.onDragOver}
-            />
-          </div>
         }
       </div>
     );
@@ -98,9 +95,9 @@ class Home extends Component {
 
 const mapStateToProps = state =>  ({
   allowedTypes: state.api.allowedTypes,
-  validFiles: state.api.validFiles,
-  invalidFiles: state.api.invalidFiles,
   isUploading: state.api.isUploading,
+  isProcessing: state.api.isProcessing,
+  isProcessed: state.api.isProcessed,
   percentCompleted: state.api.percentCompleted,
   origin: state.api.origin,
   result: state.api.result

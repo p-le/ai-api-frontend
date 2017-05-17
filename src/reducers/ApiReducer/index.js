@@ -1,5 +1,4 @@
 import * as Types from '../../actions/Api/types';
-import File from '../../utils/file';
 
 const initialState = {
   allowedTypes: [
@@ -8,9 +7,9 @@ const initialState = {
   ],
   isUploading: false,
   isUploaded: false,
+  isProcessing: false,
+  isProcessed: false,
   percentCompleted: 0,
-  validFiles: [],
-  invalidFiles: [],
   origin: '',
   result: ''
 };
@@ -22,34 +21,29 @@ const ApiReducer = (state = initialState, action) => {
         isUploading: true,
         isUploaded: false,
         percentCompleted: 0,
-        validFiles: [],
-        invalidFiles: [],
         origin: '',
         result: ''
       });
     case Types.UPLOAD_DONE:
       return Object.assign({}, state, {
         isUploading: false,
-        isUploaded: true
+        isUploaded: true,
+        isProcessing: true
       });
     case Types.UPLOAD_PROGRESS:
       return Object.assign({}, state, {
         percentCompleted: action.percentage
       });
     case Types.PROCESSING:
-      return state;
+      return Object.assign({}, state, {
+        isProcessing: true
+      });
     case Types.PROCESS_DONE:
       return Object.assign({}, state, {
+        isProcessing: false,
+        isProcessed: true,
         origin: action.origin,
         result: action.result
-      });
-    case Types.CHECK_VALID_FILES:
-      return Object.assign({}, state, { 
-        validFiles: action.files.map(file => new File(file.name, file.size))
-      });
-    case Types.CHECK_INVALID_FILES:
-      return Object.assign({}, state, { 
-        invalidFiles: action.files.map(file => new File(file.name, file.size))
       });
     default:
       return state;

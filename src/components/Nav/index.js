@@ -18,18 +18,10 @@ const Nav = () => (
       <ul className={styles.primaryLinks}>
         <li>
           <FlatButton 
-            label="Home"
+            label="API DEMO"
             primary={true}
             style={navItemStyle} 
             containerElement={<Link to="/" />}
-          />
-        </li>
-        <li>
-          <FlatButton 
-            label="History" 
-            primary={true} 
-            style={navItemStyle} 
-            containerElement={<Link to="/history" />}
           />
         </li>
       </ul>

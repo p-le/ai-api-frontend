@@ -4,11 +4,6 @@ import * as Types from './types';
 import Config from 'Config';
 /*eslint-enable */
 
-export const openWs = ws => ({
-  type: Types.OPEN_WS,
-  ws
-});
-
 export const checkValidFiles = files => ({
   type: Types.CHECK_VALID_FILES,
   files
@@ -37,9 +32,13 @@ export const uploadFiles = (files) => {
     dispatch(uploading());
     axios.post(`${Config.backend}/api/upload`, data, config).then((res) => {
       const resData = res.data;
+      console.log(resData);
       dispatch(processDone(resData));
     })
-    .catch(err => dispatch(uploadFailed(err)));
+    .catch((err) => {
+      console.log(err);
+      dispatch(uploadFailed(err));
+    });
   };
 };
 
@@ -61,7 +60,7 @@ const uploadDone = () => ({
   type: Types.UPLOAD_DONE
 });
 
-export const processDone = data => ({
+const processDone = data => ({
   type: Types.PROCESS_DONE,
   origin: data.origin,
   result: data.result

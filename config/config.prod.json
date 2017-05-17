@@ -1,3 +1,3 @@
 {
-  "backend": "http://ec2-54-65-167-196.ap-northeast-1.compute.amazonaws.com"
+  "backend": "http://terraform-api-elb-1187273602.ap-northeast-1.elb.amazonaws.com"
 }
