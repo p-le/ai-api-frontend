@@ -22,22 +22,30 @@ export const checkInvalidFiles = files => ({
 export const uploadFiles = (files) => {
   const data = new FormData();
   files.map(file => data.append('file[]', file));
+
   return (dispatch) => {
     const config = {
-      onUploadProgress: e => dispatch(updateProgress(e))
+      onUploadProgress: (event) => {
+        const percentage = Math.round((event.loaded * 100) / event.total);
+        if (percentage === 100) {
+          dispatch(uploadDone());
+        }
+        dispatch(updateProgress(percentage));
+      }
     };
+    
     dispatch(uploading());
     axios.post(`${Config.backend}/api/upload`, data, config).then((res) => {
-      const result = res.data;
-      dispatch(uploadDone(result));
+      const resData = res.data;
+      dispatch(processDone(resData));
     })
     .catch(err => dispatch(uploadFailed(err)));
   };
 };
 
-const updateProgress = event => ({
+const updateProgress = percentage => ({
     type: Types.UPLOAD_PROGRESS,
-    percentage:  Math.round((event.loaded * 100) / event.total)
+    percentage
 });
 
 const uploading = () => ({
@@ -49,12 +57,12 @@ const uploadFailed = error => ({
   error
 });
 
-const uploadDone = result => ({
-  type: Types.UPLOAD_DONE,
-  result
+const uploadDone = () => ({
+  type: Types.UPLOAD_DONE
 });
 
-export const processDone = file => ({
+export const processDone = data => ({
   type: Types.PROCESS_DONE,
-  file
+  origin: data.origin,
+  result: data.result
 });

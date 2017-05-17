@@ -23,30 +23,26 @@ const ApiReducer = (state = initialState, action) => {
         isUploaded: false,
         percentCompleted: 0,
         validFiles: [],
-        invalidFiles: []
+        invalidFiles: [],
+        origin: '',
+        result: ''
       });
     case Types.UPLOAD_DONE:
       return Object.assign({}, state, {
         isUploading: false,
-        isUploaded: true,
-        origin: action.result.origin,
-        result: action.result.result
-      });
-    case Types.PROCESS_DONE:
-      return Object.assign({}, state, {
-        validFiles: state.validFiles.map((file) => {
-          if (file._id === action.file._id) {
-            return action.file;
-          }
-          return file;
-        })
+        isUploaded: true
       });
     case Types.UPLOAD_PROGRESS:
       return Object.assign({}, state, {
         percentCompleted: action.percentage
       });
-    case Types.OPEN_WS:
-      return Object.assign({}, state, { ws: action.ws});
+    case Types.PROCESSING:
+      return state;
+    case Types.PROCESS_DONE:
+      return Object.assign({}, state, {
+        origin: action.origin,
+        result: action.result
+      });
     case Types.CHECK_VALID_FILES:
       return Object.assign({}, state, { 
         validFiles: action.files.map(file => new File(file.name, file.size))
